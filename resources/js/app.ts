@@ -1,4 +1,5 @@
 import { createApp } from 'vue';
-import HelloWorld from './components/HelloWorld.vue';
+import App from './App.vue';
+import router from './router';
 
-createApp(HelloWorld).mount('#app');
+createApp(App).use(router).mount('#app');
