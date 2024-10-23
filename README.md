@@ -31,7 +31,7 @@ Before you begin, ensure you have met the following requirements:
 1. **Clone the repository**
 
     ```bash
-    git clone https://github.com/yourusername/your-repo-name.git
+    git clone https://github.com/umair-afzal-uat/laravel-vue.git
     cd your-repo-name
     ```
 
