@@ -74,7 +74,7 @@ class AuditController extends Controller
     public function auditSystemEvents(): JsonResponse
     {
         // Get system events using the service
-        $events = $this->auditService->geyAuditSystemEvents();
+        $events = $this->auditService->getAuditSystemEvents();
 
         // Return JSON response
         return response()->json([
