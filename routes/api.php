@@ -15,6 +15,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::post('/audit/user-actions', [AuditController::class, 'storeUserAction'])->name('audit.storeUserAction');
     Route::get('/audit/system-events', [AuditController::class, 'getSystemEvents'])->name('audit.getSystemEvents');
     Route::post('/audit/system-events', [AuditController::class, 'storeSystemEvent'])->name('audit.storeSystemEvent');
+    Route::put('/update-profile/{id}', [AuthController::class, 'updateProfile'])->name('update.profile');
 });
 
 

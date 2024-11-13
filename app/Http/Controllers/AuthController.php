@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Events\UserActionEvent;
 use App\Http\Requests\AuthRequest;
+use App\Models\User;
 use App\Services\AuthService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -80,5 +81,41 @@ class AuthController extends Controller
 
         // Return success response indicating user has been logged out
         return response()->json(['message' => 'Logged out successfully']);
+    }
+
+      /**
+     * Update the user profile.
+     *
+     * This method validates the incoming request, updates the user profile,
+     * and fires a system event to log the profile update.
+     *
+     * @param  int  $id  The ID of the user to update.
+     * @param  Request  $request  The incoming HTTP request containing user data.
+     * @return \Illuminate\Http\JsonResponse  JSON response indicating success or failure.
+     */
+    public function updateProfile($id, Request $request)
+    {
+        // Find the user by ID
+        $user = User::find($id);
+
+        // Ensure the user exists
+        if (!$user) {
+            return response()->json(['message' => 'User not found'], 404);
+        }
+
+        // Validate the incoming request data
+        $validated = $request->validate([
+            'name' => 'required|string|max:255',
+            'email' => 'required|email|max:255|unique:users,email,' . $user->id,
+            'profile_image' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
+        ]);
+
+        // Update the user profile
+        $user->update($validated);
+
+        // Fire the SystemEvent to log the profile update
+        event(new UserActionEvent($user, 'Profile Updated', 'The user updated their profile.', $request->ip()));
+        // Return a success response
+        return response()->json(['message' => 'Profile updated successfully']);
     }
 }
