@@ -1,119 +1,162 @@
-# Laravel 11 & Vue 3 Setup with Tailwind CSS
+# Project Documentation
+
+## Overview
+
+This project encompasses a set of features designed for logging user actions, managing system events, handling user profile updates, and providing essential user authentication functionalities. We implemented APIs for registering users, logging in, updating profiles, and performing various system-related tasks. The system also provides logging for user actions and system events, with access control in place for certain functionalities. Below is an overview of the completed tasks.
+
+---
 
 ## Table of Contents
 
--   [Introduction](#introduction)
--   [Prerequisites](#prerequisites)
--   [Installation](#installation)
--   [Configuration](#configuration)
--   [Running the Application](#running-the-application)
--   [Project Structure](#project-structure)
--   [Built With](#built-with)
--   [Contributing](#contributing)
--   [License](#license)
+1. [API Endpoints](#api-endpoints)
+   - Register
+   - Login
+   - Update Profile
+   - Artisan Command
+   - Fetch System Events & User Actions (Admin Only)
+2. [Audit and System Events](#audit-and-system-events)
+   - User Actions Logging
+   - System Events Logging
+   - Cache Clearing Event Logging
+3. [User Profile Update](#user-profile-update)
+4. [Test Cases](#test-cases)
+   - Storing User Actions
+   - Fetching System Events
+   - Cache Clearing Event
 
-## Introduction
+---
 
-This project is a simple web application built using Laravel 11 as the backend framework and Vue 3 for the frontend, styled with Tailwind CSS. It aims to provide a seamless development experience and a responsive user interface.
+## 1. API Endpoints
 
-## Prerequisites
+### 1.1 Register
 
-Before you begin, ensure you have met the following requirements:
+- **Endpoint**: `POST /register`
+- **Description**: Registers a new user by accepting their `name`, `email`, and `password`. The request is validated, and the user is created in the system. A confirmation response is returned upon success.
+- **Request Payload**:
+    - `name` (string, required)
+    - `email` (string, required)
+    - `password` (string, required)
+    - `password_confirmation` (string, required)
+- **Response**: 
+    - `message`: Confirmation of successful registration.
 
--   PHP 8.0 or higher
--   Composer
--   Node.js (16.x or higher)
--   npm or Yarn
--   MySQL or another compatible database
+### 1.2 Login
 
-## Installation
+- **Endpoint**: `POST /login`
+- **Description**: Authenticates the user using their `email` and `password`. A successful login returns a token, which is used for subsequent authenticated requests.
+- **Request Payload**:
+    - `email` (string, required)
+    - `password` (string, required)
+- **Response**: 
+    - `token`: A JWT token for authenticated requests.
+    - `message`: Confirmation of successful login.
 
-1. **Clone the repository**
+### 1.3 Update Profile
 
-    ```bash
-    git clone https://github.com/umair-afzal-uat/laravel-vue.git
-    cd your-repo-name
-    ```
+- **Endpoint**: `PUT /update-profile/{id}`
+- **Description**: Allows the user to update their profile information (e.g., name, email, and profile image). The request validates the data before updating.
+- **Request Payload**:
+    - `name` (string, required)
+    - `email` (string, required, must be unique for other users)
+    - `profile_image` (file, optional, image type)
+- **Response**: 
+    - `message`: Confirmation of successful profile update.
 
-2. **Install backend dependencies**
+### 1.4 Artisan Command (Cache Clearing)
 
-    ```bash
-    composer install
-    ```
+- **Endpoint**: `POST /clear-cache`
+- **Description**: Clears the system cache and logs the action as a system event. This action is performed using an Artisan command and also triggers event logging.
+- **Response**:
+    - `message`: Confirmation that the cache was cleared successfully.
+    - **Admin Access**: Only accessible by admin users. 
 
-3. **Copy the `.env.example` file to `.env`**
+### 1.5 Fetch System Events (Admin Only)
 
-    ```bash
-    cp .env.example .env
-    ```
+- **Endpoint**: `GET /system-events`
+- **Description**: Fetches all system events (e.g., cache clearing, system updates) logged in the system. This is an admin-only feature, ensuring that only administrators can access sensitive system logs.
+- **Response**: 
+    - `data`: A collection of system events (e.g., event type, description, timestamp).
 
-4. **Generate an application key**
+### 1.6 Fetch User Actions (Admin Only)
 
-    ```bash
-    php artisan key:generate
-    ```
+- **Endpoint**: `GET /user-actions`
+- **Description**: Fetches all user actions (e.g., logins, profile updates) performed by users. This endpoint is also admin-only, ensuring that only administrators can view the history of user actions.
+- **Response**: 
+    - `data`: A collection of user actions (e.g., action type, user ID, description, timestamp).
 
-5. **Set up your database**: Configure your database settings in the `.env` file.
+---
 
-6. **Run migrations** (if applicable)
+## 2. Audit and System Events
 
-    ```bash
-    php artisan migrate
-    ```
+### 2.1 User Actions Logging
 
-7. **Install frontend dependencies**
+We implemented functionality to track and log **user actions** (e.g., logins, profile updates) in the system. This is achieved through the `AuditService`, where the user actions are stored and fetched as needed.
 
-    ```bash
-    npm install
-    ```
+- **Storing User Actions**: When a user performs an action, it is stored in the database for auditing purposes.
+- **Fetching User Actions**: The system allows fetching user actions with optional filters, providing a detailed history of actions performed by users.
 
-8. **Build assets**
-    ```bash
-    npm run build
-    ```
+### 2.2 System Events Logging
 
-## Configuration
+System events such as cache clearing or configuration changes are logged to keep track of critical system activities. These events can be used for debugging and monitoring system performance.
 
--   Ensure you configure your database connection in the `.env` file.
--   Customize any other environment variables as needed.
+- **Storing System Events**: When certain critical actions are performed (e.g., cache clearing), the system stores these actions as system events.
+- **Fetching System Events**: Similar to user actions, system events can be retrieved for monitoring purposes.
 
-## Running the Application
+### 2.3 Cache Clearing Event Logging
 
-You can run the Laravel development server using:
+We implemented a function that clears the system cache and simultaneously logs the event as a system activity. This allows tracking of when the cache was cleared, which is vital for maintenance and troubleshooting.
 
-```bash
-php artisan serve
-```
+- **Clear Cache**: When the cache is cleared, the event is logged in the system to track this action.
+- **Logging the Cache Clearing Event**: The event includes details like the type of event, description, additional event data (e.g., cache type), and the triggering IP address.
 
-And for the Vue.js frontend, you can run:
+---
 
-```bash
-npm run dev
-```
+## 3. User Profile Update
 
-Access your application at `http://localhost:8000`.
+### 3.1 Profile Update
 
-## Project Structure
+The system allows users to update their profiles, including their name, email, and profile image. Each update is validated, and if the profile is successfully updated, a **SystemEvent** is logged to record the profile change.
 
-```
-your-repo-name/
-├── app/                # Laravel application logic
-├── bootstrap/          # Laravel bootstrap files
-├── config/             # Configuration files
-├── database/           # Database migrations and seeds
-├── resources/          # Frontend assets (views, JS, CSS)
-│   ├── js/             # Vue components
-│   └── css/            # Tailwind CSS styles
-├── routes/             # Route definitions
-└── tests/              # Test files
-```
+- **Profile Validation**: Incoming requests for profile updates are validated to ensure data integrity (e.g., valid email, correct file format for profile image).
+- **Profile Update Logging**: Once the profile update is successful, a system event is logged with details of the update, including the user’s ID, name, and the event type.
 
-## Built With
+---
 
--   [Laravel 11](https://laravel.com) - The PHP framework for web artisans
--   [Vue 3](https://vuejs.org) - The progressive JavaScript framework
--   [Tailwind CSS](https://tailwindcss.com) - A utility-first CSS framework
+## 4. Test Cases
 
-## License
+### 4.1 Test Case for Storing User Actions
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+Test cases were written to verify that user actions are stored correctly in the database. This includes:
+- Validating that a user action is properly stored after a request.
+- Ensuring that the response contains the expected data structure.
+- Confirming the data is correctly inserted into the database.
+
+### 4.2 Test Case for Fetching System Events
+
+Test cases for fetching system events ensure that the system can retrieve events accurately. This includes:
+- Verifying that the response is successful and contains the correct data structure for system events.
+- Ensuring that all relevant system events are returned and properly formatted.
+
+### 4.3 Test Case for Cache Clearing Event
+
+Test cases were also written to ensure that cache clearing events are logged correctly. This includes:
+- Confirming that when the cache is cleared, a system event is logged.
+- Ensuring that the event is stored with the correct event type and description.
+- Verifying that the cache clearing process works without errors.
+
+---
+
+## Conclusion
+
+This project provides a robust system for tracking and managing user actions, logging critical system events, and allowing users to update their profiles securely. The implemented features ensure that all important actions are logged for auditing purposes, and the system is equipped with detailed logs for future troubleshooting and monitoring. Additionally, the API endpoints for registering, logging in, and updating profiles provide a secure foundation for managing user data.
+
+Test cases ensure the correctness of each feature, verifying that actions are logged, events are triggered, and APIs function as expected.
+
+---
+
+## Future Improvements
+
+- **Enhance Event Handling**: We can further optimize event handling by adding more granular event types and improving the filtering options for events.
+- **User Notifications**: Introducing user notifications for specific actions like profile updates, login alerts, etc., could further enhance the user experience.
+- **Performance Monitoring**: Adding more detailed logging for performance-related events could help in identifying and mitigating system bottlenecks.
+
