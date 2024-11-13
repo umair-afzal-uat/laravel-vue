@@ -18,6 +18,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::put('/update-profile/{id}', [AuthController::class, 'updateProfile'])->name('update.profile');
 });
 
-
-Route::middleware(['auth:sanctum', 'admin'])->get('/system-events', [AuditController::class, 'auditSystemEvents']);
-Route::middleware(['auth:sanctum', 'admin'])->get('/user-actions', [AuditController::class, 'auditUserActions']);
+Route::middleware(['auth:sanctum', 'admin'])->group(function () {
+    Route::get('/system-events', [AuditController::class, 'auditSystemEvents'])->name('audit.system.events');
+    Route::get('/user-actions', [AuditController::class, 'auditUserActions'])->name('audit.user.actions');
+});
