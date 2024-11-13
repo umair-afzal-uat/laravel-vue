@@ -12,8 +12,8 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware) {
-        // Register the AdminMiddleware for admin routes
-        $middleware->add('admin', \App\Http\Middleware\AdminMiddleware::class);
+        // Register the AdminMiddleware with an alias
+        $middleware->alias(['admin' => \App\Http\Middleware\AdminMiddleware::class]);
     })
     ->withExceptions(function (Exceptions $exceptions) {
         //
