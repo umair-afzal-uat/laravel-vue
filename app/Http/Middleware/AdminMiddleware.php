@@ -13,12 +13,12 @@ class AdminMiddleware
      */
     public function handle(Request $request, Closure $next): Response
     {
-        // Check if the authenticated user has an 'admin' role (or if user is admin by other means)
-        if (auth()->check() && auth()->user()->role === 'admin') {
+        // Check if the authenticated user exists and their role is 'admin' or if the user ID is 1
+        if (auth()->check() && (auth()->user()->role === 'admin' || auth()->user()->id === 1)) {
             return $next($request);
         }
 
-        // Return unauthorized response if the user is not an admin
+        // Return unauthorized response if the user is not an admin or does not have ID 1
         return response()->json([
             'status' => 'error',
             'message' => 'Unauthorized access. Admins only.',
