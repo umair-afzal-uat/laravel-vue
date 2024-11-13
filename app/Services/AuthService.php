@@ -95,4 +95,27 @@ class AuthService
 
         return $user;
     }
+
+    /**
+     * Find a user by ID.
+     *
+     * @param int $id
+     * @return User|null
+     */
+    public function findUserById(int $id)
+    {
+        return $this->userRepository->find($id);
+    }
+    /**
+     * Update the user profile.
+     *
+     * @param  \App\Models\User  $user
+     * @param  array  $data
+     * @return bool
+     */
+    public function updateProfile(User $user, array $data)
+    {
+        // Perform the update using the repository
+        return $this->userRepository->update($user, $data);
+    }
 }

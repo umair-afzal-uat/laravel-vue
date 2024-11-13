@@ -83,20 +83,17 @@ class AuthController extends Controller
         return response()->json(['message' => 'Logged out successfully']);
     }
 
-      /**
+    /**
      * Update the user profile.
      *
-     * This method validates the incoming request, updates the user profile,
-     * and fires a system event to log the profile update.
-     *
-     * @param  int  $id  The ID of the user to update.
-     * @param  Request  $request  The incoming HTTP request containing user data.
-     * @return \Illuminate\Http\JsonResponse  JSON response indicating success or failure.
+     * @param  int  $id
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\JsonResponse
      */
     public function updateProfile($id, Request $request)
     {
         // Find the user by ID
-        $user = User::find($id);
+        $user = $this->authService->findUserById($id);
 
         // Ensure the user exists
         if (!$user) {
@@ -110,11 +107,12 @@ class AuthController extends Controller
             'profile_image' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
         ]);
 
-        // Update the user profile
-        $user->update($validated);
+        // Update the user profile using the service
+        $this->authService->updateProfile($user, $validated);
 
         // Fire the SystemEvent to log the profile update
         event(new UserActionEvent($user, 'Profile Updated', 'The user updated their profile.', $request->ip()));
+
         // Return a success response
         return response()->json(['message' => 'Profile updated successfully']);
     }
