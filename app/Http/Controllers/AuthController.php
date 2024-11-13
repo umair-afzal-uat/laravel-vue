@@ -3,68 +3,63 @@
 namespace App\Http\Controllers;
 
 use App\Events\UserActionEvent;
-use App\Models\User;
+use App\Http\Requests\AuthRequest;
+use App\Services\AuthService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Hash;
-use Illuminate\Validation\ValidationException;
-use Laravel\Sanctum\HasApiTokens;
 
 class AuthController extends Controller
 {
+    /** 
+     * @var AuthService
+     */
+    protected $authService;
+
+    /**
+     * AuthController constructor.
+     *
+     * @param AuthService $authService
+     */
+    public function __construct(AuthService $authService)
+    {
+        $this->authService = $authService;
+    }
+
     /**
      * Register a new user.
+     *
+     * @param AuthRequest $request - The request containing the validated data for user registration.
+     * 
+     * @return \Illuminate\Http\JsonResponse - The response containing the success message and user data.
      */
-    public function register(Request $request)
+    public function register(AuthRequest $request)
     {
-        // Validate the request data
-        $validated = $request->validate([
-            'name' => 'required|string|max:255',
-            'email' => 'required|email|unique:users,email',
-            'password' => 'required|string|min:8|confirmed',
-        ]);
+        // Call the AuthService to register the user
+        $user = $this->authService->register($request->validated(), $request->ip());
 
-        // Create the user
-        $user = User::create([
-            'name' => $validated['name'],
-            'email' => $validated['email'],
-            'password' => Hash::make($validated['password']),
-        ]);
-
-        event(new UserActionEvent($user, 'User Register', 'User Registerred successfully', $request->ip()));
-        // Return a success response with the user's data
+        // Return success response with the created user
         return response()->json([
             'message' => 'User successfully registered',
-            'user' => $user
+            'user' => $user,
         ]);
     }
 
     /**
      * Login a user and return an authentication token.
+     *
+     * @param AuthRequest $request - The request containing the credentials for login.
+     * 
+     * @return \Illuminate\Http\JsonResponse - The response containing the success message and the generated token.
      */
-    public function login(Request $request)
+    public function login(AuthRequest $request)
     {
-        // Validate the login credentials
-        $validated = $request->validate([
-            'email' => 'required|email',
-            'password' => 'required|string',
-        ]);
+        // Call the AuthService to login the user and get the user instance
+        $user = $this->authService->login($request->validated(), $request->ip());
 
-        // Check if the credentials are correct
-        if (!Auth::attempt($validated)) {
-            throw ValidationException::withMessages([
-                'email' => ['The provided credentials are incorrect.'],
-            ]);
-        }
-
-        // Get the authenticated user
-        $user = Auth::user();
-
-        // Create an API token for the user
+        // Generate an API token for the authenticated user
         $token = $user->createToken('API Token')->plainTextToken;
 
-        event(new UserActionEvent($user, 'User Login', 'User logged in successfully', $request->ip()));
-        // Return the token in the response
+        // Return the success response with the token
         return response()->json([
             'message' => 'Login successful',
             'token' => $token,
@@ -73,15 +68,17 @@ class AuthController extends Controller
 
     /**
      * Logout the user by invalidating the token.
+     *
+     * @param Request $request - The request containing user data for logout.
+     * 
+     * @return \Illuminate\Http\JsonResponse - The response with the logout success message.
      */
     public function logout(Request $request)
     {
-        // Revoke the user's token
-        $request->user()->tokens->each(function ($token) {
-            $token->delete();
-        });
+        // Call the AuthService to handle user logout
+        $this->authService->logout($request->ip());
 
-        event(new UserActionEvent($request->user(), 'User Logout', 'User Logged out successfully', $request->ip()));
+        // Return success response indicating user has been logged out
         return response()->json(['message' => 'Logged out successfully']);
     }
 }
