@@ -1,119 +1,51 @@
-# Laravel 11 & Vue 3 Setup with Tailwind CSS
+## Audit Module Development Documentation
 
-## Table of Contents
+The **Audit Module** has been developed to provide a detailed and secure audit trail of critical user actions and system events within the web application. This module ensures that administrators can monitor and review significant activities, ensuring compliance, security, and operational integrity.
 
--   [Introduction](#introduction)
--   [Prerequisites](#prerequisites)
--   [Installation](#installation)
--   [Configuration](#configuration)
--   [Running the Application](#running-the-application)
--   [Project Structure](#project-structure)
--   [Built With](#built-with)
--   [Contributing](#contributing)
--   [License](#license)
+### Key Features and Implementation
 
-## Introduction
+1. **User Action Tracking**
+   - The module successfully tracks critical user actions including:
+     - Login attempts (both successful and failed)
+     - Profile updates
+     - Changes to sensitive data
+   - This data is stored securely for auditing and review purposes, providing a comprehensive log of user activities.
 
-This project is a simple web application built using Laravel 11 as the backend framework and Vue 3 for the frontend, styled with Tailwind CSS. It aims to provide a seamless development experience and a responsive user interface.
+2. **System Event Tracking**
+   - The system tracks significant events such as:
+     - Database updates (e.g., record creation or deletion)
+     - File uploads
+     - Critical application errors
+   - These system events are captured and logged for future reference and troubleshooting.
 
-## Prerequisites
+3. **Customizable Logging**
+   - Implemented a flexible logging system that allows administrators to selectively track specific user actions or system events.
+   - The logging mechanism can be easily configured to capture only the necessary events, ensuring efficient resource use and better control.
 
-Before you begin, ensure you have met the following requirements:
+4. **Data Privacy Compliance**
+   - The audit logs are designed to comply with data privacy regulations (such as GDPR).
+   - Sensitive information is masked or anonymized to ensure that the logs do not violate privacy laws while still capturing essential data.
 
--   PHP 8.0 or higher
--   Composer
--   Node.js (16.x or higher)
--   npm or Yarn
--   MySQL or another compatible database
+5. **Audit Reporting**
+   - Developed a reporting system that provides insightful summaries and detailed reports based on the captured audit data.
+   - Administrators can generate reports for various actions/events to monitor user behavior and system performance.
 
-## Installation
+6. **Security and Access Control**
+   - Implemented role-based access control (RBAC) to restrict access to the audit logs.
+   - Only authorized administrators can view or manage the audit trail, ensuring the integrity and security of sensitive information.
 
-1. **Clone the repository**
+7. **Backend and Database Implementation**
+   - The backend was developed using **Laravel**, taking advantage of its features for routing, authentication, and database management.
+   - A relational database (MySQL) was used to securely store and manage the audit logs, ensuring reliability and performance.
 
-    ```bash
-    git clone https://github.com/umair-afzal-uat/laravel-vue.git
-    cd your-repo-name
-    ```
+8. **RESTful API**
+   - A RESTful API was created to enable communication between the frontend and backend components of the Audit Module.
+   - The API allows external systems or frontend applications to interact with the audit data and generate reports.
 
-2. **Install backend dependencies**
+9. **Test Coverage**
+   - Automated tests were implemented to ensure the integrity and reliability of the audit trail.
+   - Tests were created for various aspects, including logging functionality, reporting, and access control.
 
-    ```bash
-    composer install
-    ```
-
-3. **Copy the `.env.example` file to `.env`**
-
-    ```bash
-    cp .env.example .env
-    ```
-
-4. **Generate an application key**
-
-    ```bash
-    php artisan key:generate
-    ```
-
-5. **Set up your database**: Configure your database settings in the `.env` file.
-
-6. **Run migrations** (if applicable)
-
-    ```bash
-    php artisan migrate
-    ```
-
-7. **Install frontend dependencies**
-
-    ```bash
-    npm install
-    ```
-
-8. **Build assets**
-    ```bash
-    npm run build
-    ```
-
-## Configuration
-
--   Ensure you configure your database connection in the `.env` file.
--   Customize any other environment variables as needed.
-
-## Running the Application
-
-You can run the Laravel development server using:
-
-```bash
-php artisan serve
-```
-
-And for the Vue.js frontend, you can run:
-
-```bash
-npm run dev
-```
-
-Access your application at `http://localhost:8000`.
-
-## Project Structure
-
-```
-your-repo-name/
-├── app/                # Laravel application logic
-├── bootstrap/          # Laravel bootstrap files
-├── config/             # Configuration files
-├── database/           # Database migrations and seeds
-├── resources/          # Frontend assets (views, JS, CSS)
-│   ├── js/             # Vue components
-│   └── css/            # Tailwind CSS styles
-├── routes/             # Route definitions
-└── tests/              # Test files
-```
-
-## Built With
-
--   [Laravel 11](https://laravel.com) - The PHP framework for web artisans
--   [Vue 3](https://vuejs.org) - The progressive JavaScript framework
--   [Tailwind CSS](https://tailwindcss.com) - A utility-first CSS framework
-
-## License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+10. **Documentation**
+    - Comprehensive documentation has been provided to guide the integration and use of the Audit Module within the web application.
+    - The documentation covers the architecture, key design decisions, and configuration instructions.
