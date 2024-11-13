@@ -36,4 +36,26 @@ class UserRepository
         // Find and return the user by email, or null if not found
         return User::where('email', $email)->first();
     }
+    /**
+     * Find a user by their ID.
+     *
+     * @param  int  $id
+     * @return \App\Models\User|null
+     */
+    public function find($id)
+    {
+        return User::find($id);
+    }
+
+    /**
+     * Update the user profile.
+     *
+     * @param  \App\Models\User  $user
+     * @param  array  $data
+     * @return bool
+     */
+    public function update(User $user, array $data)
+    {
+        return $user->update($data);
+    }
 }
