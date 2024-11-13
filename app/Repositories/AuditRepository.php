@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Repositories;
 
 use App\Models\UserAction;
@@ -42,5 +43,24 @@ class AuditRepository
     public function storeSystemEvent(array $data)
     {
         return SystemEvent::create($data);
+    }
+    /**
+     * Retrieve all system events.
+     *
+     * @return \Illuminate\Database\Eloquent\Collection
+     */
+    public function getAuditSystemEvents()
+    {
+        return SystemEvent::all();
+    }
+
+    /**
+     * Retrieve all user actions.
+     *
+     * @return \Illuminate\Database\Eloquent\Collection
+     */
+    public function getAuditUserActions()
+    {
+        return UserAction::all();
     }
 }

@@ -4,6 +4,8 @@ namespace App\Services;
 
 use App\Http\Resources\UserActionResource;
 use App\Http\Resources\SystemEventResource;
+use App\Models\SystemEvent;
+use App\Models\UserAction;
 use App\Repositories\AuditRepository;
 
 class AuditService
@@ -66,5 +68,25 @@ class AuditService
     {
         $systemEvent = $this->auditRepository->storeSystemEvent($data);
         return new SystemEventResource($systemEvent);
+    }
+
+    /**
+     * Retrieve all system events.
+     *
+     * @return \Illuminate\Database\Eloquent\Collection
+     */
+    public function getAuditSystemEvents()
+    {
+        return $this->auditRepository->getAuditSystemEvents();
+    }
+
+    /**
+     * Retrieve all user actions.
+     *
+     * @return \Illuminate\Database\Eloquent\Collection
+     */
+    public function getAuditUserActions()
+    {
+        return $this->auditRepository->getAuditUserActions();
     }
 }

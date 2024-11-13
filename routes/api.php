@@ -1,6 +1,7 @@
 <?php
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\AuditController;
+use App\Http\Controllers\Api\SystemEventController;
 
 use App\Http\Controllers\AuthController;
 
@@ -14,3 +15,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::get('/audit/system-events', [AuditController::class, 'getSystemEvents'])->name('audit.getSystemEvents');
     Route::post('/audit/system-events', [AuditController::class, 'storeSystemEvent'])->name('audit.storeSystemEvent');
 });
+
+
+Route::middleware(['auth:sanctum', 'admin'])->get('/system-events', [AuditController::class, 'auditSystemEvents']);
+Route::middleware(['auth:sanctum', 'admin'])->get('/user-actions', [AuditController::class, 'auditUserActions']);
