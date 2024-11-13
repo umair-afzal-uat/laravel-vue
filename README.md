@@ -6,7 +6,7 @@ This project encompasses a set of features designed for logging user actions, ma
 
 ---
 
-## Table of Contents
+The **Audit Module** has been developed to provide a detailed and secure audit trail of critical user actions and system events within the web application. This module ensures that administrators can monitor and review significant activities, ensuring compliance, security, and operational integrity.
 
 1. [API Endpoints](#api-endpoints)
    - Register
