@@ -16,6 +16,6 @@ class SystemEventOccurred
     {
         $this->eventType = $eventType;
         $this->eventDescription = $eventDescription;
-        $this->eventData = $eventData;
+        $this->eventData = json_encode($eventData);
     }
 }
